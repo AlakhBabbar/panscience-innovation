@@ -1,0 +1,32 @@
+/* Custom Scrollbar Styling */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #525252;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+/* Light theme scrollbar */
+html.light .scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
+html.light .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Firefox scrollbar support */
+.scrollbar-custom {
+  scrollbar-width: thin;
+}
