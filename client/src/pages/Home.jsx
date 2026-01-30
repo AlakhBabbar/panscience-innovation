@@ -117,6 +117,11 @@ function Home({ darkMode, setDarkMode }) {
     setActiveDocumentId('')
   }
 
+  const handleNewChat = () => {
+    startNewChat()
+    if (window.innerWidth < 1024) setSidebarOpen(false)
+  }
+
   // Logout
   const handleLogout = () => {
     localStorage.removeItem('auth_token')
@@ -295,9 +300,8 @@ function Home({ darkMode, setDarkMode }) {
     <div className={`flex h-screen ${darkMode ? 'bg-neutral-950' : 'bg-gray-50'}`}>
       <Sidebar
         darkMode={darkMode}
-        sidebarOpen={sidebarOpen}
-        conversations={conversations}
-        onNewChat={startNewChat}
+        sidebarOpen={sidebarOpen}        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}        conversations={conversations}
+        onNewChat={handleNewChat}
         onSelectConversation={loadConversation}
         user={me}
         userAvatar={userAvatar}

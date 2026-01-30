@@ -11,30 +11,30 @@ function ChatArea({ darkMode, messages, user, isSending, isTranscribing, isParsi
         scrollbarColor: darkMode ? '#525252 #171717' : '#d1d5db #f9fafb'
       }}
     >
-      <div className="pt-20 pb-48">
+      <div className="pt-16 sm:pt-20 pb-32 sm:pb-48">
         {messages.length === 0 ? (
-          <div className="flex items-center justify-center min-h-[calc(100vh-13rem)]">
+          <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] sm:min-h-[calc(100vh-13rem)]">
             <div className="text-center max-w-2xl mx-auto px-4">
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 ${darkMode ? 'bg-neutral-900' : 'bg-gray-100'}`}>
-                <MessageSquare size={32} className={darkMode ? 'text-white' : 'text-gray-900'} />
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 ${darkMode ? 'bg-neutral-900' : 'bg-gray-100'}`}>
+                <MessageSquare size={24} className={`${darkMode ? 'text-white' : 'text-gray-900'} sm:w-8 sm:h-8`} />
               </div>
-              <h2 className={`text-3xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h2 className={`text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 Welcome back, {user?.username.split(' ')[0]}!
               </h2>
-              <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <p className={`text-base sm:text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 How can I assist you today? Start a conversation by typing your question below.
               </p>
             </div>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto space-y-6 px-6">
+          <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 px-3 sm:px-6">
             {messages.map(message => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[70%] px-4 py-3 rounded-2xl ${
+                  className={`max-w-[85%] sm:max-w-[70%] px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl ${
                     message.sender === 'user'
                       ? darkMode ? 'bg-neutral-800 text-white' : 'bg-gray-100 text-gray-900'
                       : darkMode ? 'bg-neutral-900 text-white border border-neutral-800' : 'bg-white text-gray-900 border border-gray-200'

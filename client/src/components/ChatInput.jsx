@@ -24,8 +24,8 @@ function ChatInput({
   }
 
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-6">
-      <form onSubmit={onSubmit} className={`${darkMode ? 'bg-neutral-900/95 backdrop-blur-md' : 'bg-white/95 backdrop-blur-md'} rounded-2xl shadow-2xl border ${darkMode ? 'border-neutral-800' : 'border-gray-200'}`}>
+    <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-3 sm:px-6">
+      <form onSubmit={onSubmit} className={`${darkMode ? 'bg-neutral-900/95 backdrop-blur-md' : 'bg-white/95 backdrop-blur-md'} rounded-xl sm:rounded-2xl shadow-2xl border ${darkMode ? 'border-neutral-800' : 'border-gray-200'}`}>
         {sendError && (
           <div
             className={`mx-4 mt-4 mb-2 text-sm ${darkMode ? 'text-red-300' : 'text-red-700'}`}
@@ -119,7 +119,7 @@ function ChatInput({
             </div>
           )}
 
-          <div className="flex items-end gap-3">
+          <div className="flex items-end gap-2 sm:gap-3">
             {/* Attachment Button */}
             <button
               type="button"
@@ -127,7 +127,7 @@ function ChatInput({
               className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-gray-400 hover:text-white hover:bg-neutral-800' : 'text-gray-600 hover:text-black hover:bg-gray-100'}`}
               title="Attach files"
             >
-              <Paperclip size={24} />
+              <Paperclip size={20} className="sm:w-6 sm:h-6" />
             </button>
 
             {/* Hidden file input */}
@@ -146,7 +146,7 @@ function ChatInput({
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder={isTranscribing ? 'Transcribing file…' : isParsing ? 'Parsing document…' : isSending ? 'Sending…' : 'Type your message here...'}
-              className={`flex-1 px-3 py-2 bg-transparent outline-none ${darkMode ? 'text-white placeholder-gray-500' : 'text-gray-900 placeholder-gray-500'}`}
+              className={`flex-1 px-2 sm:px-3 py-2 bg-transparent outline-none text-sm sm:text-base ${darkMode ? 'text-white placeholder-gray-500' : 'text-gray-900 placeholder-gray-500'}`}
             />
 
             {/* Send Button */}
@@ -159,7 +159,7 @@ function ChatInput({
                   : darkMode ? 'bg-neutral-800 text-gray-600 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              <Send size={24} />
+              <Send size={20} className="sm:w-6 sm:h-6" />
             </button>
           </div>
         </div>

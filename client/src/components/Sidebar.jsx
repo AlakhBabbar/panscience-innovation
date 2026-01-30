@@ -2,7 +2,8 @@ import { Plus, LogOut } from 'lucide-react'
 
 function Sidebar({ 
   darkMode, 
-  sidebarOpen, 
+  sidebarOpen,
+  onToggleSidebar,
   conversations, 
   onNewChat, 
   onSelectConversation, 
@@ -12,8 +13,18 @@ function Sidebar({
   onLogout 
 }) {
   return (
-    <div className={`${sidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 ${darkMode ? 'bg-neutral-900' : 'bg-white'} ${darkMode ? 'text-white' : 'text-gray-900'} flex flex-col overflow-hidden`}>
-      <div className="w-64 flex flex-col h-full">
+    <>
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={onToggleSidebar}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`fixed lg:relative inset-y-0 left-0 z-40 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} ${sidebarOpen ? 'w-64 lg:w-64' : 'w-0 lg:w-0'} transition-all duration-300 ${darkMode ? 'bg-neutral-900' : 'bg-white'} ${darkMode ? 'text-white' : 'text-gray-900'} flex flex-col overflow-hidden`}>
+        <div className="w-64 flex flex-col h-full">
         {/* Logo */}
         <div className="p-4">
           <div className="flex items-center justify-between">
@@ -39,7 +50,10 @@ function Sidebar({
               <button
                 key={conv.id}
                 className={`w-full text-left px-3 py-2 rounded-lg transition-colors group ${darkMode ? 'hover:bg-neutral-800' : 'hover:bg-gray-200'}`}
-                onClick={() => onSelectConversation(conv.id)}
+                onClick={() => {
+                  onSelectConversation(conv.id)
+                  if (window.innerWidth < 1024) onToggleSidebar()
+                }}
               >
                 <div className="text-sm font-medium truncate">{conv.title}</div>
               </button>
@@ -75,6 +89,7 @@ function Sidebar({
         </div>
       </div>
     </div>
+    </>
   )
 }
 

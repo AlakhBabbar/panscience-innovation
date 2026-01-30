@@ -41,8 +41,8 @@ function LoginSignup({ darkMode, setDarkMode }) {
   }
 
   return (
-    <div className={`flex h-screen items-center justify-center ${darkMode ? 'bg-neutral-950 text-white' : 'bg-gray-50 text-gray-900'}`}>
-      <div className={`w-full max-w-md rounded-2xl border p-6 ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-gray-300'}`}>
+    <div className={`flex h-screen items-center justify-center px-4 ${darkMode ? 'bg-neutral-950 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <div className={`w-full max-w-md rounded-2xl border p-4 sm:p-6 ${darkMode ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-gray-300'}`}>
         <div className="flex items-center justify-between mb-4">
           <div className="font-semibold text-lg">PanScience</div>
           <button
