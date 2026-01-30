@@ -135,7 +135,7 @@ function ChatInput({
               ref={fileInputRef}
               type="file"
               multiple
-              accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx,.rtf"
+              accept="image/*,video/*,audio/*,.pdf"
               onChange={onAttach}
               className="hidden"
             />
