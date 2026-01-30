@@ -78,7 +78,11 @@ app = FastAPI(title="PanScience Chat API", version="1.0.0")
 # CORS middleware to allow requests from React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Vite and CRA default ports
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://panscience-innovation-assessment-al.vercel.app",
+    ],  # Vite, CRA, and deployed Vercel frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
