@@ -54,6 +54,11 @@ from services.document_store import (
     list_documents,
 )
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 _log = logging.getLogger("panscience")
 
 
@@ -80,22 +85,6 @@ async def _generate_and_persist_title(
 # Custom CORS middleware for Vercel
 class CORSHeaderMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        # Handle preflight requests
-        if request.method == "OPTIONS":
-            return Response(
-                status_code=200,
-                headers={
-                    "Access-Control-Allow-Origin": "https://panscience-innovation-assessment-al.vercel.app",
-                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers": "*",
-                    "Access-Control-Allow-Credentials": "true",
-                    "Access-Control-Max-Age": "3600",
-                },
-            )
-        
-        response = await call_next(request)
-        
-        # Add CORS headers to all responses
         origin = request.headers.get("origin", "")
         allowed_origins = [
             "http://localhost:5173",
@@ -103,11 +92,43 @@ class CORSHeaderMiddleware(BaseHTTPMiddleware):
             "https://panscience-innovation-assessment-al.vercel.app",
         ]
         
+        # Handle preflight requests
+        if request.method == "OPTIONS":
+            headers = {
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Origin, User-Agent",
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Max-Age": "3600",
+            }
+            
+            # Set origin dynamically for OPTIONS requests
+            if origin in allowed_origins:
+                headers["Access-Control-Allow-Origin"] = origin
+            else:
+                headers["Access-Control-Allow-Origin"] = allowed_origins[0]
+            
+            return Response(
+                status_code=200,
+                headers=headers,
+            )
+        
+        # Process the request
+        try:
+            response = await call_next(request)
+        except Exception as e:
+            # Handle errors and still return CORS headers
+            _log.error(f"Request error: {e}")
+            response = Response(
+                status_code=500,
+                content=str(e),
+            )
+        
+        # Add CORS headers to all responses
         if origin in allowed_origins:
             response.headers["Access-Control-Allow-Origin"] = origin
             response.headers["Access-Control-Allow-Credentials"] = "true"
             response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-            response.headers["Access-Control-Allow-Headers"] = "*"
+            response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, Origin, User-Agent"
         
         return response
 
@@ -616,6 +637,8 @@ async def media_transcribe(
 
     Returns an id you can later use to ask timestamp-scoped questions.
     """
+    _log.info(f"Transcription request from user {current_user.id}, file: {file.filename}, content_type: {file.content_type}")
+    
     if not file:
         raise HTTPException(status_code=400, detail="Missing file")
 
@@ -623,21 +646,27 @@ async def media_transcribe(
     if not data:
         raise HTTPException(status_code=400, detail="Empty file")
 
+    _log.info(f"File size: {len(data)} bytes")
+
     # Basic size guardrail (default 50MB). Adjust as needed.
     max_bytes = int((__import__("os").getenv("MAX_UPLOAD_BYTES") or "52428800").strip())
     if len(data) > max_bytes:
         raise HTTPException(status_code=413, detail=f"File too large (>{max_bytes} bytes)")
 
     try:
+        _log.info(f"Calling Deepgram for transcription...")
         dg = await transcribe_media_bytes(
             data=data,
             mimetype=file.content_type or "application/octet-stream",
             filename=file.filename,
             language=language,
         )
+        _log.info(f"Deepgram transcription successful")
     except RuntimeError as e:
+        _log.error(f"Deepgram RuntimeError: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
+        _log.error(f"Deepgram Exception: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to transcribe: {e}")
 
     doc = await create_transcript(
@@ -648,6 +677,8 @@ async def media_transcribe(
         duration=dg.get("duration"),
         segments=dg.get("segments") or [],
     )
+
+    _log.info(f"Transcript stored with ID: {doc.get('_id')}")
 
     return TranscribeResponse(
         transcript_id=str(doc.get("_id")),
