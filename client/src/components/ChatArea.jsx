@@ -11,7 +11,7 @@ function ChatArea({ darkMode, messages, user, isSending, isTranscribing, isParsi
         scrollbarColor: darkMode ? '#525252 #171717' : '#d1d5db #f9fafb'
       }}
     >
-      <div className="pt-16 sm:pt-20 pb-32 sm:pb-48">
+      <div className="pt-16 sm:pt-20 pb-40 sm:pb-48">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] sm:min-h-[calc(100vh-13rem)]">
             <div className="text-center max-w-2xl mx-auto px-4">

@@ -297,7 +297,7 @@ function Home({ darkMode, setDarkMode }) {
   }, [])
 
   return (
-    <div className={`flex h-screen ${darkMode ? 'bg-neutral-950' : 'bg-gray-50'}`}>
+    <div className={`flex h-screen overflow-hidden ${darkMode ? 'bg-neutral-950' : 'bg-gray-50'}`}>
       <Sidebar
         darkMode={darkMode}
         sidebarOpen={sidebarOpen}        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}        conversations={conversations}
@@ -309,7 +309,7 @@ function Home({ darkMode, setDarkMode }) {
         onLogout={handleLogout}
       />
 
-      <div className="flex-1 flex flex-col relative">
+      <div className="flex-1 flex flex-col relative overflow-hidden">
         <Header
           darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}

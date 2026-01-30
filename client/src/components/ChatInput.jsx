@@ -24,8 +24,9 @@ function ChatInput({
   }
 
   return (
-    <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-3 sm:px-6">
-      <form onSubmit={onSubmit} className={`${darkMode ? 'bg-neutral-900/95 backdrop-blur-md' : 'bg-white/95 backdrop-blur-md'} rounded-xl sm:rounded-2xl shadow-2xl border ${darkMode ? 'border-neutral-800' : 'border-gray-200'}`}>
+    <div className="fixed bottom-0 left-0 right-0 z-20 pb-3 sm:pb-6" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
+      <div className="max-w-3xl mx-auto px-3 sm:px-6">
+        <form onSubmit={onSubmit} className={`${darkMode ? 'bg-neutral-900/95 backdrop-blur-md' : 'bg-white/95 backdrop-blur-md'} rounded-xl sm:rounded-2xl shadow-2xl border ${darkMode ? 'border-neutral-800' : 'border-gray-200'}`}>
         {sendError && (
           <div
             className={`mx-4 mt-4 mb-2 text-sm ${darkMode ? 'text-red-300' : 'text-red-700'}`}
@@ -164,6 +165,7 @@ function ChatInput({
           </div>
         </div>
       </form>
+      </div>
     </div>
   )
 }
