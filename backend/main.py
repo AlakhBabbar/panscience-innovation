@@ -1,6 +1,9 @@
 from fastapi import Depends, FastAPI, HTTPException, status, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 import asyncio
 import logging
 import re
@@ -73,7 +76,45 @@ async def _generate_and_persist_title(
     except Exception as e:
         _log.warning("Failed to generate/persist conversation title: %s", e)
 
+
+# Custom CORS middleware for Vercel
+class CORSHeaderMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Handle preflight requests
+        if request.method == "OPTIONS":
+            return Response(
+                status_code=200,
+                headers={
+                    "Access-Control-Allow-Origin": "https://panscience-innovation-assessment-al.vercel.app",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Max-Age": "3600",
+                },
+            )
+        
+        response = await call_next(request)
+        
+        # Add CORS headers to all responses
+        origin = request.headers.get("origin", "")
+        allowed_origins = [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "https://panscience-innovation-assessment-al.vercel.app",
+        ]
+        
+        if origin in allowed_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "*"
+        
+        return response
+
 app = FastAPI(title="PanScience Chat API", version="1.0.0")
+
+# Add custom CORS middleware first
+app.add_middleware(CORSHeaderMiddleware)
 
 # CORS middleware to allow requests from React frontend
 app.add_middleware(
@@ -86,6 +127,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
